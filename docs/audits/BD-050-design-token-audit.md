@@ -2,7 +2,7 @@
 
 **Issue:** #142  
 **Area:** UX and Accessibility  
-**Date:** 25 November 2026
+**Updated:** 27 November 2026
 
 ## 1. Purpose
 
@@ -12,11 +12,15 @@ Review shared interface components and styles for consistent design tokens, spac
 
 - `apps/web/src/app/globals.css`
 - `apps/web/src/components/common/appShell.tsx`
+- `apps/web/src/components/common/statCard.tsx`
+- `apps/web/src/components/common/featureDashboard.tsx`
 - `apps/web/src/components/forms/formField.tsx`
 - `apps/web/src/components/theme/themeToggle.tsx`
 - `apps/web/src/components/ui/button.tsx`
+- `apps/web/src/components/ui/card.tsx`
 - `apps/web/src/components/ui/input.tsx`
 - `apps/web/src/components/ui/label.tsx`
+- `apps/web/src/components/dashboard/mvp-demo/dashboardPanel.tsx`
 
 ## 3. Findings
 
@@ -60,6 +64,23 @@ The shared input component suppresses the default outline and applies a two-pixe
 
 **Recommendation:** Keep the existing input focus treatment and include it in future consistency reviews.
 
+### Card typography and accessibility
+
+The shared `CardTitle` component defaults to an H2 heading.
+
+The audit identified statistic labels in `StatCard` and `DashboardPanel` that were being rendered as H2 headings even though they function as descriptive labels rather than section headings.
+
+**Improvement implemented:**
+
+- Added a reusable `CardLabel` component to `card.tsx`.
+- Updated `statCard.tsx` to use `CardLabel`.
+- Updated `dashboardPanel.tsx` to use `CardLabel`.
+- Preserved `CardTitle` for actual card headings.
+
+The new component renders labels as paragraph elements while retaining consistent typography through the existing Tailwind classes.
+
+This avoids introducing unnecessary headings for these statistic labels.
+
 ### Formatting consistency
 
 Some reviewed JSX contains inconsistent quote and spacing styles.
@@ -68,29 +89,46 @@ Some reviewed JSX contains inconsistent quote and spacing styles.
 
 ## 4. Code changes
 
-No production component changes are being retained at this stage. The initial button change was reverted after testing showed that the existing global focus indicator already worked.
+The following production files were updated:
+
+- `apps/web/src/components/ui/card.tsx`
+- `apps/web/src/components/common/statCard.tsx`
+- `apps/web/src/components/dashboard/mvp-demo/dashboardPanel.tsx`
+
+A new test file was added:
+
+- `apps/web/src/components/ui/card.test.tsx`
+
+The new test verifies that:
+
+1. `CardLabel` renders as a paragraph.
+2. `CardTitle` continues to render as an H2 heading.
 
 ## 5. Verification
 
 - TypeScript check: passed (`tsc --noEmit`, exit code 0).
 - Git whitespace check: passed (`git diff --check`).
-- Web test suite: 343 tests passed, 1 todo, and 12 test suites failed because the database client reported that `DATABASE_URL` was not configured.
-- The test failures have not been established as being caused by this audit.
+- New Card component tests: 2 passed.
+- Existing full web test suite: previously reported 343 tests passed, 1 todo, and 12 failed test suites because `DATABASE_URL` was not configured.
+- The full suite has not yet been rerun after the latest changes.
+- The station dashboard could not be visually inspected because the application reported the missing `DATABASE_URL` configuration.
+
+The database configuration issue has not been established as being caused by this audit.
 
 ## 6. Remaining work
 
-- Review representative screens in light and dark themes.
-- Capture genuine screenshots of the existing focus behaviour.
-- Identify any additional evidence-backed design-token inconsistencies.
-- Complete available checks.
-- Submit the audit and any justified improvements through a pull request.
+- Complete visual verification of accessible dashboard screens.
+- Capture genuine before-and-after screenshots for the CardLabel improvement if a suitable accessible screen can be used.
+- Review the final changes.
+- Run the available checks again.
+- Submit the audit and justified improvements through a pull request.
 
 ## 7. Screenshot evidence
 
-The following screenshots were captured from the running application:
+Previously captured screenshots:
 
 - `screenshots/BD-050-homepage-dark-mode.png` – homepage in dark mode.
 - `screenshots/BD-050-homepage-light-mode.png` – homepage in light mode.
 - `screenshots/BD-050-keyboard-focus-after.png` – visible keyboard focus indicator on the showcase button.
 
-The screenshots document the existing theme and keyboard focus behaviour. No before-and-after improvement is claimed.
+These screenshots document the existing theme and keyboard focus behaviour. They do not demonstrate the new CardLabel improvement, and no before-and-after visual comparison is claimed.

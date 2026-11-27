@@ -56,6 +56,18 @@ export function CardTitle({
   );
 }
 
+export function CardLabel({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p
+      className={cn('text-sm font-medium text-muted-foreground', className)}
+      {...props}
+    />
+  );
+}
+
 export function CardDescription({
   className,
   ...props

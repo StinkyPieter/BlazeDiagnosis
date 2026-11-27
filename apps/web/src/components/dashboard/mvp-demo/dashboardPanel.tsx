@@ -1,5 +1,5 @@
 import { StatusBadge } from '@/components/status';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardLabel } from '@/components/ui/card';
 
 const cards = [
   { title: 'Jobs awaiting approval', value: '3', status: 'ACTION' },
@@ -22,9 +22,7 @@ export function DashboardPanel() {
         {cards.map((card) => (
           <Card key={card.title}>
             <CardHeader className="flex-row items-center justify-between space-y-0">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {card.title}
-              </CardTitle>
+              <CardLabel>{card.title}</CardLabel>
               <StatusBadge value={card.status} />
             </CardHeader>
             <CardContent>
